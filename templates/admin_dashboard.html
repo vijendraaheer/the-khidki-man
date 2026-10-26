@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Overview | {{ company.company_name }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-layout">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <a href="{{ url_for('admin_dashboard') }}" class="admin-brand">
+            <span class="brand-logo">KM</span>
+            <span class="brand-text">
+                <strong>{{ company.company_name }}</strong>
+                <small>ADMIN CONTROL PANEL</small>
+            </span>
+        </a>
+
+        <div class="sidebar-label">DASHBOARD NAVIGATION</div>
+        <nav class="sidebar-nav">
+            <a class="nav-link active" href="#overview"><span>▦</span> Overview</a>
+            <a class="nav-link" href="#inquiries-admin"><span>✉</span> Customer Enquiries <span class="nav-count">{{ stats.total }}</span></a>
+            <a class="nav-link" href="#projects-admin"><span>🖼</span> Manage Projects <span class="nav-count">{{ stats.projects }}</span></a>
+            <a class="nav-link" href="#services-admin"><span>🛠</span> Services <span class="nav-count">{{ stats.services }}</span></a>
+            <a class="nav-link" href="#reviews-admin"><span>★</span> Reviews</a>
+            <a class="nav-link" href="{{ url_for('admin_settings') }}"><span>⚙</span> Business Settings</a>
+            <a class="nav-link" href="{{ url_for('admin_profile') }}"><span>👤</span> Admin Profile</a>
+            <a class="nav-link" href="{{ url_for('index') }}" target="_blank"><span>↗</span> View Live Website</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="admin-user">
+                <div class="user-avatar">{{ (current_user.name or 'A')[:1]|upper }}</div>
+                <div class="user-info">
+                    <strong>{{ current_user.name }}</strong>
+                    <small>{{ current_user.email }}</small>
+                </div>
+            </div>
+            <form method="post" action="{{ url_for('logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="logout-btn" type="submit">↪ Sign Out</button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle menu">☰</button>
+            <div class="breadcrumb">
+                Admin <span>/</span> <strong>Control Panel</strong>
+            </div>
+            <div class="topbar-right">
+                <span class="online-dot"></span>
+                <span>Active: {{ current_user.name }} (Full Control)</span>
+                <div class="topbar-avatar">{{ (current_user.name or 'A')[:1]|upper }}</div>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- WELCOME HEADER -->
+            <section class="welcome-section" id="overview">
+                <div>
+                    <span class="eyebrow">ADMINISTRATOR CONTROL</span>
+                    <h1>Website Management</h1>
+                    <p>Manage real-time customer enquiries, upload device project photos, and update services.</p>
+                </div>
+                <div class="welcome-actions">
+                    <a class="admin-btn btn-primary" href="#projects-admin">+ Add New Project</a>
+                    <a class="admin-btn btn-light" href="{{ url_for('export_inquiries') }}">📥 Export Enquiries (CSV)</a>
+                </div>
+            </section>
+
+            <!-- STATS CARDS -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-heading">
+                        <span class="stat-icon blue">✉</span>
+                        <span>Total Inquiries</span>
+                    </div>
+                    <h2>{{ stats.total }}</h2>
+                    <p>Submissions recorded</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-heading">
+                        <span class="stat-icon orange">⏳</span>
+                        <span>Pending / New</span>
+                    </div>
+                    <h2>{{ stats.new }}</h2>
+                    <p>Require response</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-heading">
+                        <span class="stat-icon green">🖼</span>
+                        <span>Portfolio Projects</span>
+                    </div>
+                    <h2>{{ stats.projects }}</h2>
+                    <p>Live on gallery</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-heading">
+                        <span class="stat-icon purple">🛠</span>
+                        <span>Services</span>
+                    </div>
+                    <h2>{{ stats.services }}</h2>
+                    <p>Active catalog</p>
+                </div>
+            </section>
+
+            <!-- 1. MANAGE PROJECTS WITH DIRECT DEVICE UPLOAD -->
+            <section class="admin-card" id="projects-admin">
+                <div class="card-heading">
+                    <div>
+                        <span class="eyebrow">PORTFOLIO & GALLERY</span>
+                        <h2>Add Project (Upload from Device)</h2>
+                        <p>Apne computer ya mobile device se photo select karke upload karein.</p>
+                    </div>
+                </div>
+
+                <!-- ENCTYPE IS ESSENTIAL FOR FILE UPLOADS -->
+                <form method="post" action="{{ url_for('add_project') }}" enctype="multipart/form-data" class="admin-form-stack">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="admin-form-grid">
+                        <label>Project Title *
+                            <input name="title" required placeholder="e.g. 3-Track Sliding Doors Installation" maxlength="160">
+                        </label>
+                        <label>Location / City
+                            <input name="location" placeholder="e.g. Aravali Vihar, Bhiwadi" maxlength="140">
+                        </label>
+                        <label class="full-width">Select Project Photo from Device (JPG, PNG, WEBP)
+                            <input type="file" name="project_image" accept="image/png, image/jpeg, image/jpg, image/webp" required>
+                        </label>
+                        <label class="full-width">Project Description *
+                            <textarea name="description" rows="3" required placeholder="Brief description of the fitting, materials used, profile color etc."></textarea>
+                        </label>
+                    </div>
+                    <button class="admin-btn btn-primary" type="submit" style="width: fit-content;">
+                        ⬆ Upload & Publish Project
+                    </button>
+                </form>
+
+                <h3 style="margin: 28px 0 14px; font-size: 15px; border-top: 1px solid var(--admin-border); padding-top: 18px;">
+                    Existing Portfolio Projects ({{ projects|length }})
+                </h3>
+
+                <div class="managed-list">
+                    {% for p in projects %}
+                        <div class="managed-item" style="align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                {% if p.image_url %}
+                                    <img src="{{ p.image_url }}" alt="{{ p.title }}" style="width: 55px; height: 55px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1;">
+                                {% else %}
+                                    <div style="width: 55px; height: 55px; background: #e2e8f0; border-radius: 8px; display: grid; place-items: center; font-size: 20px;">🖼</div>
+                                {% endif %}
+                                <div>
+                                    <strong style="font-size: 13px;">{{ p.title }}</strong>
+                                    <small>{{ p.location or 'Custom Site' }} · {{ p.created_at.strftime('%d %b %Y') }}</small>
+                                    <p style="margin: 4px 0 0; font-size: 11px; color: var(--admin-muted);">{{ p.description[:90] }}...</p>
+                                </div>
+                            </div>
+                            <form method="post" action="{{ url_for('delete_project', item_id=p.id) }}" onsubmit="return confirm('Is project ko delete karna chahte hain?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="delete-btn">🗑 Delete</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <span>🖼</span>
+                            <h3>No Projects Yet</h3>
+                            <p>Upar diye form se apna pehla project photo ke sath upload karein.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- 2. CUSTOMER ENQUIRIES MANAGEMENT -->
+            <section class="admin-card" id="inquiries-admin">
+                <div class="card-heading">
+                    <div>
+                        <span class="eyebrow">INCOMING LEADS</span>
+                        <h2>Customer Inquiries</h2>
+                        <p>View, update lead status, or contact customers on WhatsApp directly.</p>
+                    </div>
+                </div>
+
+                <!-- DATE FILTER FORM -->
+                <form method="get" action="{{ url_for('export_inquiries') }}" class="export-form">
+                    <label>From Date
+                        <input type="date" name="start">
+                    </label>
+                    <label>To Date
+                        <input type="date" name="end">
+                    </label>
+                    <button type="submit" class="admin-btn btn-light">📥 Download CSV</button>
+                </form>
+
+                <div class="table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Customer</th>
+                                <th>Contact & City</th>
+                                <th>Requirement</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for x in inquiries %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ x.name }}</strong>
+                                        <small>{{ x.created_at.strftime('%d %b %Y, %I:%M %p') }}</small>
+                                    </td>
+                                    <td>
+                                        <div><a href="tel:{{ x.phone }}">📞 {{ x.phone }}</a></div>
+                                        {% if x.email %}<small>{{ x.email }}</small>{% endif %}
+                                        <small>{{ x.city or "City not provided" }}</small>
+                                    </td>
+                                    <td>
+                                        <strong style="color: var(--admin-blue);">{{ x.service or "General Enquiry" }}</strong>
+                                        <details>
+                                            <summary>Read message</summary>
+                                            <p>{{ x.message }}</p>
+                                        </details>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-{{ x.status|lower }}">{{ x.status }}</span>
+                                        <form method="post" action="{{ url_for('update_inquiry', item_id=x.id) }}" class="status-form">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <select name="status">
+                                                <option value="New" {% if x.status=='New' %}selected{% endif %}>New</option>
+                                                <option value="Contacted" {% if x.status=='Contacted' %}selected{% endif %}>Contacted</option>
+                                                <option value="Accepted" {% if x.status=='Accepted' %}selected{% endif %}>Accepted</option>
+                                                <option value="Completed" {% if x.status=='Completed' %}selected{% endif %}>Completed</option>
+                                                <option value="Rejected" {% if x.status=='Rejected' %}selected{% endif %}>Rejected</option>
+                                            </select>
+                                            <button type="submit" class="mini-btn">Update</button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <div class="action-links">
+                                            <a href="{{ x.phone|wa_link }}" target="_blank" rel="noopener" class="whatsapp-link">💬 WhatsApp</a>
+                                            <form method="post" action="{{ url_for('delete_inquiry', item_id=x.id) }}" onsubmit="return confirm('Delete this inquiry?');">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="delete-btn">🗑 Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="empty-state">
+                                        <span>✉</span>
+                                        <h3>No customer inquiries yet</h3>
+                                        <p>Enquiries submitted via website contact form will appear here in real-time.</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 3. SERVICES & REVIEWS MANAGEMENT GRID -->
+            <div class="management-grid">
+                <!-- SERVICES SECTION -->
+                <section class="admin-card" id="services-admin">
+                    <div class="card-heading">
+                        <div>
+                            <span class="eyebrow">CATALOG</span>
+                            <h2>Add Service</h2>
+                        </div>
+                    </div>
+                    <form method="post" action="{{ url_for('add_service') }}" class="admin-form-stack">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <label>Service Name *
+                            <input name="name" required placeholder="e.g. Slim Line Swing Doors" maxlength="140">
+                        </label>
+                        <label>Price Label
+                            <input name="price_label" placeholder="Contact for quotation" value="Contact for quotation" maxlength="100">
+                        </label>
+                        <label>Description *
+                            <textarea name="description" rows="2" required placeholder="Service features and specifications..."></textarea>
+                        </label>
+                        <button class="admin-btn btn-primary" type="submit">+ Add Service</button>
+                    </form>
+
+                    <h3 style="margin: 22px 0 12px; font-size: 14px;">Existing Services</h3>
+                    <div class="managed-list">
+                        {% for s in services %}
+                            <div class="managed-item">
+                                <div>
+                                    <strong>{{ s.name }}</strong>
+                                    <small>{{ s.price_label }}</small>
+                                </div>
+                                <form method="post" action="{{ url_for('delete_service', item_id=s.id) }}" onsubmit="return confirm('Delete service?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="delete-btn">Delete</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <!-- REVIEWS MODERATION -->
+                <section class="admin-card" id="reviews-admin">
+                    <div class="card-heading">
+                        <div>
+                            <span class="eyebrow">FEEDBACK</span>
+                            <h2>Reviews Management</h2>
+                        </div>
+                    </div>
+
+                    <form method="post" action="{{ url_for('add_existing_review') }}" class="admin-form-stack">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="admin-form-grid">
+                            <label>Customer Name *
+                                <input name="name" required placeholder="Client Name" maxlength="100">
+                            </label>
+                            <label>Location / City
+                                <input name="location" placeholder="e.g. Bhiwadi" maxlength="120">
+                            </label>
+                            <label>Rating (1-5 Stars)
+                                <select name="rating">
+                                    <option value="5">5 Stars ★★★★★</option>
+                                    <option value="4">4 Stars ★★★★☆</option>
+                                    <option value="3">3 Stars ★★★☆☆</option>
+                                </select>
+                            </label>
+                        </div>
+                        <label>Review Message *
+                            <textarea name="message" rows="2" required placeholder="Customer's feedback..."></textarea>
+                        </label>
+                        <button class="admin-btn btn-primary" type="submit">+ Publish Direct Review</button>
+                    </form>
+
+                    <h3 style="margin: 22px 0 12px; font-size: 14px;">Customer Reviews List ({{ reviews|length }})</h3>
+                    <div class="managed-list">
+                        {% for r in reviews %}
+                            <div class="review-row">
+                                <div class="review-copy">
+                                    <strong>{{ r.name }} ({{ r.rating }}★)</strong>
+                                    <span class="status-badge {% if r.approved %}status-accepted{% else %}status-new{% endif %}">
+                                        {% if r.approved %}Published{% else %}Pending Approval{% endif %}
+                                    </span>
+                                    <small>{{ r.location or 'Verified Customer' }} · {{ r.created_at.strftime('%d %b %Y') }}</small>
+                                    <p>“{{ r.message }}”</p>
+                                </div>
+                                <div class="row-actions">
+                                    {% if not r.approved %}
+                                        <form method="post" action="{{ url_for('moderate_review', review_id=r.id) }}">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="action" value="approve">
+                                            <button class="mini-btn" type="submit">Approve</button>
+                                        </form>
+                                    {% else %}
+                                        <form method="post" action="{{ url_for('moderate_review', review_id=r.id) }}">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="action" value="hide">
+                                            <button class="mini-btn" type="submit">Hide</button>
+                                        </form>
+                                    {% endif %}
+                                    <form method="post" action="{{ url_for('moderate_review', review_id=r.id) }}" onsubmit="return confirm('Delete review?');">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="action" value="delete">
+                                        <button class="delete-btn" type="submit">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="muted" style="text-align: center; padding: 14px 0;">No reviews recorded yet.</p>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+
+            <!-- FOOTER -->
+            <footer class="admin-footer">
+                <span>© {{ current_year }} {{ company.company_name }} — All Rights Reserved.</span>
+                <span>Full Access Administrator Panel</span>
+            </footer>
+        </div>
+    </main>
+</div>
+
+<!-- SIDEBAR TOGGLE SCRIPT FOR MOBILE -->
+<script>
+    const toggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('adminSidebar');
+    if (toggle && sidebar) {
+        toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-open');
+        });
+    }
+</script>
+{% endblock %}

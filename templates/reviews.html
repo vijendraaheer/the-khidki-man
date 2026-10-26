@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Customer Reviews & Ratings | {{ company.company_name }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <span class="eyebrow">TESTIMONIALS &amp; REPUTATION</span>
+    <h1>Customer Voices &amp; <span class="gradient">Authentic Experiences.</span></h1>
+    <p>Read genuine installation feedback from homeowners, builders, and commercial clients across {{ company.service_area }}[cite: 21].</p>
+</section>
+
+<!-- REVIEWS GRID -->
+<section class="section compact-section">
+    <div class="review-grid review-page-grid">
+        {% for r in reviews %}
+            <article class="review-card">
+                <div class="stars" aria-label="{{ r.rating }} out of 5 stars">
+                    {% for n in range(r.rating) %}★{% endfor %}{% for n in range(5 - r.rating) %}☆{% endfor %}
+                </div>
+                <p>“{{ r.message }}”</p>
+                <div class="review-author">
+                    <span class="review-avatar">{{ r.name[:1]|upper }}</span>
+                    <div>
+                        <b>{{ r.name }}</b>
+                        <small>{{ r.location or 'Verified Client' }} · {{ r.created_at.strftime('%b %Y') if r.created_at else 'Recent' }}</small>
+                    </div>
+                </div>
+            </article>
+        {% else %}
+            <div class="review-empty">
+                <h2>No Public Reviews Yet</h2>
+                <p>If we have recently installed windows or doors at your space, share your experience below[cite: 21]!</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- SUBMIT REVIEW FORM -->
+<section class="section review-form-section" id="write-review">
+    <div class="review-form-container">
+        <div class="review-form-intro">
+            <span class="eyebrow">COMMUNITY REPUTATION</span>
+            <h2>Share Your <span class="gradient">Feedback.</span></h2>
+            <p>Your honest review helps homeowners make informed choices about sound insulation and fabrication quality[cite: 21].</p>
+            <div class="moderation-note">
+                <strong>🛡 Note on Moderation</strong>
+                <span>All submissions are reviewed by our team before publishing publicly on the website[cite: 21].</span>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <form method="post" class="form-stack">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="form-two">
+                    <label>Your Name *
+                        <input name="name" maxlength="100" required autocomplete="name" placeholder="Full name">
+                    </label>
+                    <label>City / Location
+                        <input name="location" maxlength="120" placeholder="e.g. Aravali Vihar, Bhiwadi">
+                    </label>
+                </div>
+
+                <label>Your Rating *
+                    <select name="rating" required>
+                        <option value="5">★★★★★ — 5 Stars (Excellent Fabrication &amp; Fitting)</option>
+                        <option value="4">★★★★☆ — 4 Stars (Very Good Experience)</option>
+                        <option value="3">★★★☆☆ — 3 Stars (Satisfactory)</option>
+                        <option value="2">★★☆☆☆ — 2 Stars (Needs Improvement)</option>
+                        <option value="1">★☆☆☆☆ — 1 Star (Unsatisfactory)</option>
+                    </select>
+                </label>
+
+                <label>Your Review Message *
+                    <textarea name="message" rows="4" maxlength="1500" required placeholder="Describe window/door quality, fitting precision, or team responsiveness..."></textarea>
+                </label>
+
+                <button class="btn btn-full" type="submit">Submit Customer Review →</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

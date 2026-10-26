@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block title %}{{ company.company_name }} | {{ company.tagline }}{% endblock %}
+
+{% block content %}
+<!-- ================= 1. HERO SECTION (MATCHING SCREENSHOT) ================= -->
+<section class="exact-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-container">
+        <div class="hero-text-box">
+            <h1>YOUR ONE-STOP DESTINATION<br>FOR WINDOWS &amp; DOORS SOLUTIONS!</h1>
+            <a href="{{ url_for('enquiry_page') }}" class="hero-enquire-btn">Enquire Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- ================= 2. SERVICES ICON STRIP (MATCHING SCREENSHOT) ================= -->
+<section class="services-strip-section">
+    <h2 class="strip-main-heading">OUR SERVICES</h2>
+    <div class="services-strip-grid">
+        <div class="service-item">
+            <div class="service-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <line x1="12" y1="3" x2="12" y2="21"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                </svg>
+            </div>
+            <span>uPVC / Aluminium<br>Windows &amp; Doors</span>
+        </div>
+
+        <div class="service-item">
+            <div class="service-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="2" width="16" height="20" rx="2"/>
+                    <line x1="9" y1="2" x2="9" y2="22"/>
+                    <circle cx="15" cy="12" r="1.5" fill="#0077b6"/>
+                </svg>
+            </div>
+            <span>Slim Line Swing Doors</span>
+        </div>
+
+        <div class="service-item">
+            <div class="service-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="18" rx="2"/>
+                    <line x1="8" y1="3" x2="8" y2="21"/>
+                    <line x1="16" y1="3" x2="16" y2="21"/>
+                </svg>
+            </div>
+            <span>Partitions</span>
+        </div>
+
+        <div class="service-item">
+            <div class="service-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="2" x2="12" y2="22"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <polyline points="5,9 2,12 5,15"/>
+                    <polyline points="19,9 22,12 19,15"/>
+                </svg>
+            </div>
+            <span>Synchro | Telescopic</span>
+        </div>
+    </div>
+</section>
+
+<!-- ================= 3. WHY CHOOSE US STRIP (MATCHING SCREENSHOT) ================= -->
+<section class="why-choose-strip">
+    <div class="why-choose-wrap">
+        <span class="why-title">WHY CHOOSE US</span>
+        <div class="why-points-row">
+            <span><i>✔</i> Expert Installation</span>
+            <span><i>✔</i> Quality Materials</span>
+            <span><i>🕒</i> Quick Support</span>
+        </div>
+    </div>
+</section>
+
+<!-- ================= 4. DETAILED SERVICES OVERVIEW ================= -->
+<section class="section" id="services">
+    <div class="section-head">
+        <div>
+            <span class="eyebrow">WHAT WE DO</span>
+            <h2>Architectural Solutions for <span class="gradient">Every Space.</span></h2>
+        </div>
+        <a class="link-btn" href="{{ url_for('services_page') }}">View all services →</a>
+    </div>
+
+    <div class="card-grid">
+        {% for s in services[:3] %}
+            <article class="service-card">
+                <div class="service-icon">
+                    {% if loop.index == 1 %}▦{% elif loop.index == 2 %}◇{% else %}⌁{% endif %}
+                </div>
+                <h3>{{ s.name }}</h3>
+                <p>{{ s.description }}</p>
+                <div class="card-bottom">
+                    <span>{{ s.price_label }}</span>
+                    <a href="{{ url_for('enquiry_page', service=s.name) }}">Enquire ↗</a>
+                </div>
+            </article>
+        {% else %}
+            <p class="empty">Our services will be listed here soon. Contact us to discuss your requirement.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ================= 5. OUR WORK / PORTFOLIO ================= -->
+<section class="section projects-section">
+    <div class="section-head">
+        <div>
+            <span class="eyebrow">OUR PORTFOLIO</span>
+            <h2>Proven Work in <span class="gradient">Real Spaces.</span></h2>
+        </div>
+        <a class="link-btn" href="{{ url_for('projects_page') }}">View all projects →</a>
+    </div>
+
+    <div class="project-grid">
+        {% for p in projects %}
+            <article class="project-card">
+                {% if p.image_url %}
+                    <img src="{{ p.image_url }}" alt="{{ p.title }}" loading="lazy">
+                {% else %}
+                    <div class="project-placeholder">
+                        <span>⌂</span>
+                        <small>{{ company.company_name|upper }} · PROJECT</small>
+                    </div>
+                {% endif %}
+                <div class="project-info">
+                    <span>{{ p.location or "Custom installation" }}</span>
+                    <h3>{{ p.title }}</h3>
+                    <p>{{ p.description }}</p>
+                </div>
+            </article>
+        {% else %}
+            <div class="project-empty">
+                <span>⌂</span>
+                <h3>Quality installations completed across {{ company.service_area }}</h3>
+                <p>New gallery projects are being uploaded. Reach out directly for on-site samples.</p>
+                <a class="link-btn" href="{{ url_for('enquiry_page') }}">Discuss your requirement →</a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ================= 6. REVIEWS / TESTIMONIALS ================= -->
+<section class="section reviews-preview">
+    <div class="section-head">
+        <div>
+            <span class="eyebrow">CUSTOMER FEEDBACK</span>
+            <h2>Trust Built Through <span class="gradient">Real Service.</span></h2>
+        </div>
+        <a class="link-btn" href="{{ url_for('reviews_page') }}">Read / write a review →</a>
+    </div>
+
+    <div class="review-grid">
+        {% for r in reviews %}
+            <article class="review-card">
+                <div class="stars" aria-label="{{ r.rating }} out of 5 stars">
+                    {% for n in range(r.rating) %}★{% endfor %}{% for n in range(5-r.rating) %}☆{% endfor %}
+                </div>
+                <p>“{{ r.message }}”</p>
+                <div class="review-author">
+                    <span class="review-avatar">{{ r.name[:1]|upper }}</span>
+                    <div>
+                        <b>{{ r.name }}</b>
+                        <small>{{ r.location or 'Verified Customer' }}</small>
+                    </div>
+                </div>
+            </article>
+        {% else %}
+            <div class="review-empty">
+                <h3>Your feedback matters</h3>
+                <p>Have you recently worked with us on a window or door fitting? Share your experience.</p>
+                <a class="btn btn-sm" href="{{ url_for('reviews_page') }}">Write a review →</a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ================= 7. FREQUENTLY ASKED QUESTIONS ================= -->
+<section class="section faq-section">
+    <div class="section-head">
+        <div>
+            <span class="eyebrow">COMMON QUESTIONS</span>
+            <h2>Before You <span class="gradient">Get Started.</span></h2>
+        </div>
+    </div>
+
+    <div class="faq-list">
+        <details>
+            <summary>How do I book a site measurement &amp; estimate?</summary>
+            <p>Click on "Enquire Now" or message us via WhatsApp with your room or property dimensions. Our technicians provide on-site measurements and estimate sheets.</p>
+        </details>
+        <details>
+            <summary>What is the difference between uPVC and Aluminium systems?</summary>
+            <p>uPVC offers high thermal insulation, dust seals, and noise cancellation. Aluminium systems feature ultra-slim profiles, high glass-to-frame ratios, and modern architectural aesthetics.</p>
+        </details>
+        <details>
+            <summary>Do you manufacture custom sizes?</summary>
+            <p>Yes. Every door, window, partition, and slider is custom-measured and fabricated precisely for your wall aperture.</p>
+        </details>
+        <details>
+            <summary>Which areas do you serve?</summary>
+            <p>{{ company.service_area }}. Contact our support line to verify immediate team availability.</p>
+        </details>
+    </div>
+</section>
+
+<!-- ================= 8. FLOATING ACTION CTA ================= -->
+<section class="contact-cta">
+    <div>
+        <span class="eyebrow">LET'S GET STARTED</span>
+        <h2>Ready to Upgrade<br>Your Windows &amp; Doors?</h2>
+        <p>Get a precise quotation, genuine profile samples, and professional installation guidance.</p>
+    </div>
+    <div class="cta-buttons">
+        <a class="btn btn-light" href="{{ url_for('enquiry_page') }}">Send an enquiry ↗</a>
+        <a class="outline-btn" href="{{ company.whatsapp|wa_link }}" target="_blank" rel="noopener">WhatsApp us</a>
+    </div>
+</section>
+
+<!-- ================= 9. BOTTOM CONTACT STRIP (MATCHING SCREENSHOT) ================= -->
+<section class="bottom-info-strip">
+    <div class="bottom-info-grid">
+        <div class="info-block">
+            <p><strong>Mob.:</strong> <a href="tel:{{ company.phone }}">{{ company.phone }}</a></p>
+            <p><strong>Email:</strong> <a href="mailto:{{ company.email }}">{{ company.email }}</a></p>
+        </div>
+        <div class="info-block">
+            <p><strong>Address:</strong> {{ company.address }}</p>
+        </div>
+        <div class="info-block">
+            <p><strong>Contact Person:</strong> {{ company.contact_person or 'Kamlesh Yadav' }}</p>
+            <p><strong>GSTIN:</strong> {{ company.gst }}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

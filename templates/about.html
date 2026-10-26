@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}About Us | {{ company.company_name }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <span class="eyebrow">ABOUT {{ company.company_name|upper }}</span>
+    <h1>Precision Engineering for <span class="gradient">Every Opening.</span></h1>
+    <p>{{ company.tagline }}. Based in {{ company.service_area }}, we deliver high-grade architectural solutions from initial dimension audit to final sealant inspection[cite: 25].</p>
+</section>
+
+<!-- 3 FEATURE PILLARS -->
+<section class="section compact-section">
+    <div class="about-grid">
+        <article class="about-feature">
+            <span class="benefit-icon">📐</span>
+            <h2>Millimeter-Level Accuracy</h2>
+            <p>No gaps, zero air leakage, and flawless alignment. We perform complete digital laser measurements before fabrication begins[cite: 25].</p>
+        </article>
+
+        <article class="about-feature">
+            <span class="benefit-icon">🛡</span>
+            <h2>Tested Material Quality</h2>
+            <p>We source heavy-gauge uPVC and certified architectural aluminium alloys designed to withstand heavy wind loads and high summer temperatures[cite: 25].</p>
+        </article>
+
+        <article class="about-feature">
+            <span class="benefit-icon">🤝</span>
+            <h2>Direct Ownership</h2>
+            <p>Guided by Kamlesh Yadav, our experienced fitters ensure clean site handovers with verified after-sales warranty support[cite: 11, 25].</p>
+        </article>
+    </div>
+</section>
+
+<!-- FLYER BLUEPRINT STRIP -->
+<section class="why-choose-strip">
+    <div class="why-choose-wrap">
+        <span class="why-title">DEALS IN</span>
+        <div class="why-points-row">
+            <span><i>✔</i> uPVC &amp; Aluminium</span>
+            <span><i>✔</i> Slim Line Swing Doors</span>
+            <span><i>✔</i> Toughened Partitions</span>
+            <span><i>✔</i> Telescopic Sliders</span>
+        </div>
+    </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="simple-contact-banner">
+    <div>
+        <span class="eyebrow" style="color: #38bdf8;">DISCUSS YOUR SPACE</span>
+        <h2>Ready to build or renovate your windows?</h2>
+        <p>Book a free technical site inspection in {{ company.service_area }}[cite: 25].</p>
+    </div>
+    <div class="banner-cta-group">
+        <a class="btn btn-primary" href="{{ url_for('enquiry_page') }}">Schedule Inspection ➔</a>
+        <a class="outline-btn" href="{{ company.whatsapp|wa_link }}" target="_blank" rel="noopener">WhatsApp Us ↗</a>
+    </div>
+</section>
+{% endblock %}

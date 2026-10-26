@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Projects & Installations | {{ company.company_name }}{% endblock %}
+
+{% block content %}
+<!-- PAGE HERO -->
+<section class="page-hero">
+    <span class="eyebrow">OUR PORTFOLIO</span>
+    <h1>Featured Projects &amp; <span class="gradient">Installations.</span></h1>
+    <p>A showcase of precision uPVC windows, ultra-slim aluminium sliding doors, and architectural glass partitions crafted for residential and commercial spaces[cite: 9, 12].</p>
+</section>
+
+<!-- PROJECT GALLERY GRID -->
+<section class="section compact-section">
+    <div class="project-gallery-grid">
+        {% for p in projects %}
+            <article class="project-showcase-card">
+                <div class="project-img-wrapper">
+                    {% if p.image_url %}
+                        <img src="{{ p.image_url }}" alt="{{ p.title }}" loading="lazy">
+                    {% else %}
+                        <div class="project-placeholder">
+                            <span>🖼</span>
+                            <small>{{ company.company_name|upper }} · SITE</small>
+                        </div>
+                    {% endif %}
+                    <span class="location-badge">📍 {{ p.location or 'Custom Site' }}</span>
+                </div>
+                
+                <div class="project-body">
+                    <h3>{{ p.title }}</h3>
+                    <p>{{ p.description }}</p>
+                    <div class="project-card-footer">
+                        <small class="project-date">{{ p.created_at.strftime('%b %Y') if p.created_at else 'Recent' }}</small>
+                        <a href="{{ url_for('enquiry_page', service=p.title) }}" class="quote-link">
+                            Request Similar Fitting →
+                        </a>
+                    </div>
+                </div>
+            </article>
+        {% else %}
+            <div class="project-empty-state">
+                <div class="empty-icon">🖼</div>
+                <h3>Portfolio Projects Coming Soon</h3>
+                <p>We are uploading recent window and door installation photographs[cite: 9]. Connect with our technical team directly to see physical profile samples and on-site catalogs[cite: 1, 9].</p>
+                <a class="btn btn-primary" href="{{ url_for('enquiry_page') }}">Discuss Your Requirement →</a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- WHY CHOOSE US STRIP (FROM BRAND SCREENSHOT) -->
+<section class="why-choose-strip">
+    <div class="why-choose-wrap">
+        <span class="why-title">QUALITY GUARANTEE</span>
+        <div class="why-points-row">
+            <span><i>✔</i> Expert Installation</span>
+            <span><i>✔</i> Quality Materials</span>
+            <span><i>🕒</i> Quick Support</span>
+        </div>
+    </div>
+</section>
+
+<!-- PROJECT CONVERSION BANNER -->
+<section class="simple-contact-banner">
+    <div>
+        <span class="eyebrow" style="color: #38bdf8;">PLANNED RENOVATION OR NEW BUILD?</span>
+        <h2>Looking for a similar custom installation for your space?</h2>
+        <p>Send us your floor plan or aperture sizes. Our team will visit for measurements and provide a customized quotation[cite: 1, 9].</p>
+    </div>
+    <div class="banner-cta-group">
+        <a class="btn btn-primary" href="{{ url_for('enquiry_page') }}">Request a Quotation →</a>
+        <a class="outline-btn" href="{{ company.whatsapp|wa_link }}" target="_blank" rel="noopener">WhatsApp Blueprint ↗</a>
+    </div>
+</section>
+{% endblock %}

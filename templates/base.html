@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="{{ company.meta_description or company.tagline }}">
+
+    <meta name="theme-color" content="#ffffff">
+
+    <title>
+        {% block title %}
+            {{ company.company_name }} | Windows & Doors
+        {% endblock %}
+    </title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- TOP INFORMATION BAR -->
+    <div class="top-strip">
+        <div class="top-strip-inner">
+
+            <span>
+                Professional Windows, Doors & Glass Solutions
+            </span>
+
+            <div class="top-strip-right">
+
+                {% if company.phone %}
+                    <a href="tel:{{ company.phone }}">
+                        ☎ {{ company.phone }}
+                    </a>
+                {% endif %}
+
+                {% if company.office_hours %}
+                    <span class="strip-divider">|</span>
+                    <span>{{ company.office_hours }}</span>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MAIN HEADER -->
+    <header class="site-header">
+
+        <div class="nav-wrap">
+
+            <!-- BRAND LOGO -->
+            <a class="brand"
+               href="{{ url_for('index') }}"
+               aria-label="{{ company.company_name }} home">
+
+                <img
+                    src="{{ url_for('static', filename='images/logo.png') }}"
+                    alt="{{ company.company_name }} logo">
+
+                <span class="brand-copy">
+
+                    <strong>{{ company.company_name }}</strong>
+
+                    <small>
+                        WINDOW SERVICES &amp; SOLUTIONS
+                    </small>
+
+                </span>
+
+            </a>
+
+
+            <!-- MOBILE MENU BUTTON -->
+            <button class="menu-toggle"
+                    type="button"
+                    aria-label="Open navigation"
+                    aria-expanded="false"
+                    aria-controls="primary-navigation">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+
+            <!-- NAVIGATION -->
+            <nav class="nav-links"
+                 id="primary-navigation"
+                 aria-label="Main navigation">
+
+                <a href="{{ url_for('index') }}"
+                   class="{% if request.endpoint == 'index' %}active{% endif %}">
+                    Home
+                </a>
+
+                <a href="{{ url_for('services_page') }}"
+                   class="{% if request.endpoint == 'services_page' %}active{% endif %}">
+                    Services
+                </a>
+
+                <a href="{{ url_for('projects_page') }}"
+                   class="{% if request.endpoint == 'projects_page' %}active{% endif %}">
+                    Projects
+                </a>
+
+                <a href="{{ url_for('reviews_page') }}"
+                   class="{% if request.endpoint == 'reviews_page' %}active{% endif %}">
+                    Reviews
+                </a>
+
+                <a href="{{ url_for('enquiry_page') }}"
+                   class="{% if request.endpoint == 'enquiry_page' %}active{% endif %}">
+                    Enquiry
+                </a>
+
+                <a href="{{ url_for('contact_page') }}"
+                   class="{% if request.endpoint == 'contact_page' %}active{% endif %}">
+                    Contact Us
+                </a>
+
+                <a href="{{ url_for('about_page') }}"
+                   class="{% if request.endpoint == 'about_page' %}active{% endif %}">
+                    About Us
+                </a>
+
+
+                <!-- ADMIN NAVIGATION -->
+                {% if current_user.is_authenticated
+                      and current_user.role == 'admin' %}
+
+                    <div class="admin-nav-group">
+
+                        <a href="{{ url_for('admin_dashboard') }}">
+                            Admin
+                        </a>
+
+                        <a href="{{ url_for('admin_profile') }}">
+                            Profile
+                        </a>
+
+                        <a href="{{ url_for('admin_settings') }}">
+                            Settings
+                        </a>
+
+                    </div>
+
+                {% elif current_user.is_authenticated %}
+
+                    <a href="{{ url_for('dashboard') }}">
+                        My Dashboard
+                    </a>
+
+                {% endif %}
+
+
+                <!-- QUOTE BUTTON -->
+                <a class="nav-cta"
+                   href="{{ url_for('enquiry_page') }}">
+                    Get a Quote
+                </a>
+
+
+                <!-- LOGOUT -->
+                {% if current_user.is_authenticated %}
+
+                    <form method="post"
+                          action="{{ url_for('logout') }}"
+                          class="inline nav-logout-form">
+
+                        <input type="hidden"
+                               name="csrf_token"
+                               value="{{ csrf_token() }}">
+
+                        <button class="nav-logout"
+                                type="submit">
+                            Logout
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="flash-wrap" aria-live="polite">
+
+                    {% for category, message in messages %}
+
+                        <div class="flash {{ category }}"
+                             role="status">
+
+                            <span>{{ message }}</span>
+
+                            <button type="button"
+                                    class="flash-close"
+                                    aria-label="Dismiss message">
+                                ×
+                            </button>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- PAGE CONTENT -->
+        {% block content %}{% endblock %}
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+        <div class="footer-main">
+
+
+            <!-- FOOTER BRAND -->
+            <div class="footer-brand">
+
+                <a class="brand footer-logo"
+                   href="{{ url_for('index') }}">
+
+                    <img
+                        src="{{ url_for('static', filename='images/logo.png') }}"
+                        alt="{{ company.company_name }} logo">
+
+                    <span class="brand-copy">
+
+                        <strong>{{ company.company_name }}</strong>
+
+                        <small>
+                            WINDOWS · DOORS · SOLUTIONS
+                        </small>
+
+                    </span>
+
+                </a>
+
+                <p>{{ company.tagline }}</p>
+
+                <a class="footer-quote"
+                   href="{{ url_for('enquiry_page') }}">
+                    Discuss Your Project →
+                </a>
+
+            </div>
+
+
+            <!-- QUICK LINKS -->
+            <div class="footer-column">
+
+                <h3>Quick Links</h3>
+
+                <a href="{{ url_for('about_page') }}">
+                    About Us
+                </a>
+
+                <a href="{{ url_for('services_page') }}">
+                    Our Services
+                </a>
+
+                <a href="{{ url_for('projects_page') }}">
+                    Our Projects
+                </a>
+
+                <a href="{{ url_for('reviews_page') }}">
+                    Reviews
+                </a>
+
+            </div>
+
+
+            <!-- CONTACT DETAILS -->
+            <div class="footer-column">
+
+                <h3>Contact Details</h3>
+
+                {% if company.phone %}
+                    <a href="tel:{{ company.phone }}">
+                        {{ company.phone }}
+                    </a>
+                {% endif %}
+
+                {% if company.email %}
+                    <a href="mailto:{{ company.email }}">
+                        {{ company.email }}
+                    </a>
+                {% endif %}
+
+                {% if company.address %}
+                    <p>{{ company.address }}</p>
+                {% endif %}
+
+                {% if company.office_hours %}
+                    <p>
+                        <b>Office Hours:</b>
+                        {{ company.office_hours }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+
+            <!-- SOCIAL LINKS -->
+            <div class="footer-column footer-social">
+
+                <h3>Follow Us</h3>
+
+                {% if company.instagram %}
+                    <a href="{{ company.instagram }}"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        Instagram ↗
+                    </a>
+                {% endif %}
+
+                {% if company.facebook %}
+                    <a href="{{ company.facebook }}"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        Facebook ↗
+                    </a>
+                {% endif %}
+
+                {% if company.linkedin %}
+                    <a href="{{ company.linkedin }}"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        LinkedIn ↗
+                    </a>
+                {% endif %}
+
+                {% if company.youtube %}
+                    <a href="{{ company.youtube }}"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        YouTube ↗
+                    </a>
+                {% endif %}
+
+                {% if company.gst %}
+
+                    <p class="footer-gst">
+
+                        <small>GSTIN</small>
+                        <br>
+
+                        <b>{{ company.gst }}</b>
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER COPYRIGHT -->
+        <div class="footer-bottom">
+
+            <span>
+                © {{ current_year }}
+                {{ company.company_name }}.
+                All rights reserved.
+            </span>
+
+            <span>
+                Quality spaces begin with the right solutions.
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- FLOATING WHATSAPP BUTTON -->
+    {% if company.whatsapp %}
+
+        <a class="floating-wa"
+           href="{{ company.whatsapp|wa_link }}"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Chat with us on WhatsApp"
+           title="Chat on WhatsApp">
+
+            <svg viewBox="0 0 24 24"
+                 aria-hidden="true">
+
+                <path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.5 4.1 1.6 5.9L.2 24l6.5-1.7a11.8 11.8 0 0 0 5.4 1.3h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.1-1.2-6-3.5-8.3ZM12.2 21.5c-1.7 0-3.4-.5-4.8-1.3l-.4-.2-3.9 1 1-3.8-.3-.4a9.6 9.6 0 0 1-1.5-5.1c0-5.3 4.4-9.6 9.7-9.6 2.6 0 5 1 6.8 2.8a9.6 9.6 0 0 1 2.8 6.8c0 5.4-4.3 9.8-9.4 9.8Zm5.3-7.2c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2l-.9 1.1c-.2.2-.4.2-.7.1-1.8-.9-3-1.6-4.2-3.6-.3-.5.3-.5.8-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3 1.8.8 2.5.9 3.4.8.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.1-1.4-.1-.1-.3-.2-.6-.3Z"/>
+
+            </svg>
+
+        </a>
+
+    {% endif %}
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+        (() => {
+
+            const button = document.querySelector('.menu-toggle');
+            const nav = document.querySelector('.nav-links');
+
+            // Mobile navigation
+            if (button && nav) {
+
+                button.addEventListener('click', () => {
+
+                    const isOpen = nav.classList.toggle('open');
+
+                    button.setAttribute(
+                        'aria-expanded',
+                        String(isOpen)
+                    );
+
+                    button.setAttribute(
+                        'aria-label',
+                        isOpen
+                            ? 'Close navigation'
+                            : 'Open navigation'
+                    );
+
+                });
+
+
+                nav.querySelectorAll('a').forEach(link => {
+
+                    link.addEventListener('click', () => {
+
+                        nav.classList.remove('open');
+
+                        button.setAttribute(
+                            'aria-expanded',
+                            'false'
+                        );
+
+                    });
+
+                });
+
+            }
+
+
+            // Close flash messages
+            document.querySelectorAll('.flash-close').forEach(button => {
+
+                button.addEventListener('click', () => {
+
+                    const flash = button.closest('.flash');
+
+                    if (flash) {
+                        flash.remove();
+                    }
+
+                });
+
+            });
+
+        })();
+    </script>
+
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

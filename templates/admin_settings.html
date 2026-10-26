@@ -1,0 +1,170 @@
+
+{% extends "base.html" %}
+
+{% block title %}Business Settings | {{ company.company_name }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-layout settings-page">
+    <aside class="admin-sidebar">
+        <a href="{{ url_for('admin_dashboard') }}" class="admin-brand">
+            <span class="brand-logo">KM</span>
+            <span class="brand-text">
+                <strong>{{ company.company_name }}</strong>
+                <small>ADMIN PANEL</small>
+            </span>
+        </a>
+
+        <div class="sidebar-label">WORKSPACE</div>
+        <nav class="sidebar-nav">
+            <a class="nav-link" href="{{ url_for('admin_dashboard') }}">▦ &nbsp; Overview</a>
+            <a class="nav-link" href="{{ url_for('admin_profile') }}">◎ &nbsp; My Profile</a>
+            <a class="nav-link active" href="{{ url_for('admin_settings') }}">⚙ &nbsp; Business Settings</a>
+            <a class="nav-link" href="{{ url_for('index') }}">↗ &nbsp; View Website</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="admin-user">
+                <div class="user-avatar">{{ (current_user.name or 'A')[:1]|upper }}</div>
+                <div class="user-info">
+                    <strong>{{ current_user.name }}</strong>
+                    <small>Administrator</small>
+                </div>
+            </div>
+            <form method="post" action="{{ url_for('logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="logout-btn" type="submit">↪ Sign Out</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <a class="profile-back" href="{{ url_for('admin_dashboard') }}">← Dashboard</a>
+            <div class="topbar-right">
+                <span class="online-dot"></span>
+                <span>Website Configuration</span>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <section class="welcome-section">
+                <div>
+                    <span class="eyebrow">BUSINESS CONTROL CENTER</span>
+                    <h1>Business Settings</h1>
+                    <p>Manage your company identity, contact information and online presence.</p>
+                </div>
+                <a class="admin-btn btn-light" href="{{ url_for('index') }}" target="_blank" rel="noopener">
+                    Preview Website ↗
+                </a>
+            </section>
+
+            <div class="settings-banner">
+                <div class="settings-banner-icon">⚙</div>
+                <div>
+                    <h2>Website information</h2>
+                    <p>Changes saved here should update your public website and footer wherever these company details are displayed.</p>
+                </div>
+            </div>
+
+            <form method="post" action="{{ url_for('admin_settings') }}" class="settings-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <section class="admin-card">
+                    <div class="settings-section-title">
+                        <span class="settings-section-icon">▣</span>
+                        <div>
+                            <h2>Company Identity</h2>
+                            <p>Your brand name and main business description.</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <label>Company Name
+                            <input name="company_name" value="{{ company.company_name }}" maxlength="160" required>
+                        </label>
+                        <label>Website Tagline
+                            <input name="tagline" value="{{ company.tagline }}" maxlength="300">
+                        </label>
+                        <label>Service Area
+                            <input name="service_area" value="{{ company.service_area }}" maxlength="200">
+                        </label>
+                        <label>GSTIN
+                            <input name="gst" value="{{ company.gst }}" maxlength="30">
+                        </label>
+                        <label class="full-width">Meta Description (SEO)
+                            <textarea name="meta_description" rows="3" maxlength="320">{{ company.meta_description }}</textarea>
+                        </label>
+                    </div>
+                </section>
+
+                <section class="admin-card">
+                    <div class="settings-section-title">
+                        <span class="settings-section-icon">☎</span>
+                        <div>
+                            <h2>Contact & Office Details</h2>
+                            <p>Keep customer-facing phone, email and office information up to date.</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <label>Business Phone
+                            <input type="tel" name="phone" value="{{ company.phone }}" maxlength="30">
+                        </label>
+                        <label>Business Email
+                            <input type="email" name="email" value="{{ company.email }}" maxlength="160">
+                        </label>
+                        <label>WhatsApp Number
+                            <input type="tel" name="whatsapp" value="{{ company.whatsapp }}" maxlength="30">
+                        </label>
+                        <label>Office Hours
+                            <input name="office_hours" value="{{ company.office_hours }}" maxlength="200">
+                        </label>
+                        <label class="full-width">Full Office Address
+                            <textarea name="address" rows="3" maxlength="500">{{ company.address }}</textarea>
+                        </label>
+                    </div>
+                </section>
+
+                <section class="admin-card">
+                    <div class="settings-section-title">
+                        <span class="settings-section-icon">↗</span>
+                        <div>
+                            <h2>Social Media & Marketing</h2>
+                            <p>Add your official social profiles to help customers connect with your business.</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <label>Instagram URL
+                            <input type="url" name="instagram" value="{{ company.instagram }}" placeholder="https://instagram.com/...">
+                        </label>
+                        <label>Facebook URL
+                            <input type="url" name="facebook" value="{{ company.facebook }}" placeholder="https://facebook.com/...">
+                        </label>
+                        <label>LinkedIn URL
+                            <input type="url" name="linkedin" value="{{ company.linkedin }}" placeholder="https://linkedin.com/...">
+                        </label>
+                        <label>YouTube URL
+                            <input type="url" name="youtube" value="{{ company.youtube }}" placeholder="https://youtube.com/...">
+                        </label>
+                    </div>
+                </section>
+
+                <div class="settings-savebar">
+                    <span>Review your changes before saving.</span>
+                    <button type="submit" class="admin-btn btn-primary">
+                        Save Business Settings
+                    </button>
+                </div>
+            </form>
+
+            <footer class="admin-footer">
+                <span>© {{ current_year }} {{ company.company_name }}</span>
+                <span>Business Configuration</span>
+            </footer>
+        </div>
+    </main>
+</div>
+{% endblock %}

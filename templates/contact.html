@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Project Enquiry | {{ company.company_name }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <span class="eyebrow">ESTIMATE &amp; CONSULTATION</span>
+    <h1>Tell Us About <span class="gradient">Your Project.</span></h1>
+    <p>Fill out the form below for on-site measurement booking, custom fabrications, and estimated quotations[cite: 23].</p>
+</section>
+
+<section class="contact-layout section compact-section">
+    <!-- FORM PANEL -->
+    <div class="panel form-panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Project Requirement Form</h2>
+                <p>Fields marked with * are required for site measurement coordination[cite: 23].</p>
+            </div>
+        </div>
+
+        <form method="post" class="form-stack">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-two">
+                <label>Full Name *
+                    <input name="name" maxlength="100" required placeholder="e.g. Vikram Singh">
+                </label>
+                <label>Phone / WhatsApp *
+                    <input name="phone" maxlength="40" required placeholder="+91 96498 74351">
+                </label>
+            </div>
+
+            <div class="form-two">
+                <label>Email Address (Optional)
+                    <input type="email" name="email" maxlength="160" placeholder="vikram@example.com">
+                </label>
+                <label>Site City / Locality *
+                    <input name="city" maxlength="100" placeholder="e.g. Bhiwadi, Tijara, NCR">
+                </label>
+            </div>
+
+            <label>Required Solution *
+                <select name="service">
+                    <option value="">Choose a solution...</option>
+                    {% for s in services %}
+                        <option value="{{ s.name }}" {% if request.args.get('service') == s.name %}selected{% endif %}>{{ s.name }}</option>
+                    {% endfor %}
+                    <option value="uPVC Windows & Doors">uPVC Windows &amp; Doors</option>
+                    <option value="Slim Line Swing Doors">Slim Line Swing Doors</option>
+                    <option value="Glass Partitions">Partitions</option>
+                    <option value="Synchro | Telescopic Doors">Synchro | Telescopic</option>
+                    <option value="Other / Need Guidance">Other / Need Guidance</option>
+                </select>
+            </label>
+
+            <label>Project Details &amp; Aperture Measurements *
+                <textarea name="message" rows="5" required placeholder="Mention number of windows/doors, approximate height x width, preferred profile color, or timeline..."></textarea>
+            </label>
+
+            <button class="btn btn-full" type="submit">Submit Project Enquiry ➔</button>
+            <small class="privacy-note">🔒 Your contact details are securely transmitted directly to our technical supervisor[cite: 23].</small>
+        </form>
+    </div>
+
+    <!-- SIDEBAR INFORMATION (MATCHING BRAND FLYER) -->
+    <aside class="contact-side">
+        <div class="contact-card">
+            <span class="contact-symbol">📍</span>
+            <h3>Head Office &amp; Works</h3>
+            <p>{{ company.address }}</p>
+            <p><strong>Hours:</strong> {{ company.office_hours }}</p>
+        </div>
+
+        <div class="contact-card">
+            <span class="contact-symbol">📞</span>
+            <h3>Direct Calling</h3>
+            <p>Speak with {{ company.contact_person or 'Kamlesh Yadav' }}[cite: 11]:</p>
+            <a href="tel:{{ company.phone }}" class="action-phone-btn">☎ {{ company.phone }}</a>
+        </div>
+
+        <div class="contact-card">
+            <span class="contact-symbol">💬</span>
+            <h3>Instant WhatsApp</h3>
+            <p>Share photos, blueprints, or site videos directly for rapid estimations[cite: 23]:</p>
+            <a href="{{ company.whatsapp|wa_link }}" target="_blank" rel="noopener" class="action-wa-btn">
+                Chat on WhatsApp ↗
+            </a>
+        </div>
+
+        <div class="gst-box">
+            <small>GOVERNMENT IDENTIFICATION</small>
+            <strong>GSTIN: {{ company.gst }}</strong>
+        </div>
+    </aside>
+</section>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Services | {{ company.company_name }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <span class="eyebrow">WHAT WE OFFER</span>
+    <h1>Our Precision <span class="gradient">Services &amp; Solutions.</span></h1>
+    <p>Explore custom uPVC, aluminium, glass partitions, and specialized sliding systems engineered for durability, aesthetics, and sound insulation.</p>
+</section>
+
+<!-- MAIN SERVICES CATALOG -->
+<section class="section compact-section">
+    <div class="card-grid services-catalog-grid">
+        {% for s in services %}
+            <article class="service-card professional-card">
+                <div class="service-icon-badge">
+                    {% if "window" in s.name|lower %}
+                        <!-- Window Drawing SVG -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="1.8">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <line x1="12" y1="3" x2="12" y2="21"/>
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                        </svg>
+                    {% elif "door" in s.name|lower or "swing" in s.name|lower %}
+                        <!-- Door Drawing SVG -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="1.8">
+                            <rect x="4" y="2" width="16" height="20" rx="2"/>
+                            <line x1="9" y1="2" x2="9" y2="22"/>
+                            <circle cx="15" cy="12" r="1.5" fill="#0077b6"/>
+                        </svg>
+                    {% elif "partition" in s.name|lower %}
+                        <!-- Partition SVG -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="1.8">
+                            <rect x="2" y="3" width="20" height="18" rx="2"/>
+                            <line x1="8" y1="3" x2="8" y2="21"/>
+                            <line x1="16" y1="3" x2="16" y2="21"/>
+                        </svg>
+                    {% else %}
+                        <!-- Telescopic / Sliding SVG -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="1.8">
+                            <line x1="12" y1="2" x2="12" y2="22"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <polyline points="5,9 2,12 5,15"/>
+                            <polyline points="19,9 22,12 19,15"/>
+                        </svg>
+                    {% endif %}
+                </div>
+                <h3>{{ s.name }}</h3>
+                <p>{{ s.description }}</p>
+                <div class="card-bottom">
+                    <span class="price-tag">{{ s.price_label }}</span>
+                    <a class="service-inquire-link" href="{{ url_for('enquiry_page', service=s.name) }}">
+                        Enquire Now →
+                    </a>
+                </div>
+            </article>
+        {% else %}
+            <p class="empty">Services are currently being updated. Please contact our office directly.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- SERVICE HIGHLIGHT / WHY CHOOSE BAR -->
+<section class="why-choose-strip">
+    <div class="why-choose-wrap">
+        <span class="why-title">OUR COMMITMENT</span>
+        <div class="why-points-row">
+            <span><i>✔</i> Exact Site Measurements</span>
+            <span><i>✔</i> Certified High-Grade Profiles</span>
+            <span><i>✔</i> Skilled In-House Fitters</span>
+        </div>
+    </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="simple-contact-banner">
+    <div>
+        <span class="eyebrow" style="color: #38bdf8;">CUSTOM APERTURE / PROJECT?</span>
+        <h2>Need help selecting the right profile or glass?</h2>
+        <p>Send us your floor plan, aperture dimensions, or site photos for instant guidance.</p>
+    </div>
+    <div class="banner-cta-group">
+        <a class="btn btn-primary" href="{{ url_for('enquiry_page') }}">Talk to Our Expert →</a>
+        <a class="outline-btn" href="{{ company.whatsapp|wa_link }}" target="_blank" rel="noopener">WhatsApp Chat ↗</a>
+    </div>
+</section>
+{% endblock %}

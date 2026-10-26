@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Login | {{ company.company_name }}{% endblock %}
+
+{% block content %}
+<section class="auth-wrap">
+    <div class="auth-intro">
+        <span class="eyebrow">SECURE ACCESS</span>
+        <h1>Welcome Back to <span class="gradient">{{ company.company_name }}</span></h1>
+        <p>Log in to access your customer inquiries, project records, or sign in as an administrator to manage leads and updates[cite: 24].</p>
+        
+        <div class="auth-badge-box">
+            <span>🔐 End-to-end encrypted sessions</span>
+            <span>📍 Serving {{ company.service_area }}</span>
+        </div>
+    </div>
+
+    <div class="auth-card">
+        <h2>Account Login</h2>
+        <p class="auth-sub">Enter your registered email and password[cite: 24].</p>
+
+        <form method="post" class="form-stack">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <label>Email Address
+                <input type="email" name="email" required autocomplete="email" placeholder="you@example.com">
+            </label>
+            
+            <label>Password
+                <input type="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
+            </label>
+            
+            <button class="btn btn-full" type="submit">Sign In to Account →</button>
+        </form>
+
+        <p class="auth-bottom">Don't have an account yet? <a href="{{ url_for('register') }}">Register customer account</a></p>
+    </div>
+</section>
+{% endblock %}

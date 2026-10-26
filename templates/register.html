@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Register Account | {{ company.company_name }}{% endblock %}
+
+{% block content %}
+<section class="auth-wrap">
+    <div class="auth-intro">
+        <span class="eyebrow">CUSTOMER PORTAL</span>
+        <h1>Start Your Project with <span class="gradient">{{ company.company_name }}</span></h1>
+        <p>Create a verified customer account to track your window and door inquiries, site measurement schedules, and official quotations in real-time[cite: 20].</p>
+        
+        <div class="auth-feature-list">
+            <div class="auth-feature-item">
+                <span class="feat-icon">✓</span>
+                <div>
+                    <strong>Track Project Milestones</strong>
+                    <small>Monitor enquiry verification, measurements, and installation status[cite: 17, 20].</small>
+                </div>
+            </div>
+            <div class="auth-feature-item">
+                <span class="feat-icon">✓</span>
+                <div>
+                    <strong>Direct Coordination</strong>
+                    <small>Seamless communication directly with Kamlesh Yadav and site engineers[cite: 11, 20].</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-card">
+        <h2>Create an Account</h2>
+        <p class="auth-sub">Enter your details to create your customer workspace[cite: 20].</p>
+
+        <form method="post" class="form-stack">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <label>Full Name *
+                <input name="name" maxlength="100" required autocomplete="name" placeholder="e.g. Rahul Sharma">
+            </label>
+            
+            <label>Email Address *
+                <input type="email" name="email" maxlength="160" required autocomplete="email" placeholder="rahul@example.com">
+            </label>
+            
+            <label>Create Password *
+                <input type="password" name="password" minlength="8" required autocomplete="new-password" placeholder="Minimum 8 characters">
+            </label>
+            
+            <label>Confirm Password *
+                <input type="password" name="confirm_password" minlength="8" required autocomplete="new-password" placeholder="Re-enter password">
+            </label>
+            
+            <button class="btn btn-full" type="submit">Complete Registration →</button>
+        </form>
+
+        <p class="auth-bottom">Already registered with us? <a href="{{ url_for('login') }}">Sign In here</a>[cite: 20]</p>
+    </div>
+</section>
+{% endblock %}
