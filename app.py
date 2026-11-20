@@ -5,9 +5,7 @@ import os
 import uuid
 from datetime import date, datetime, time, timedelta, timezone
 from functools import wraps
-
-from flask import send_from_directory
-import os
+from xml.sax.saxutils import escape
 
 import click
 from dotenv import load_dotenv
@@ -19,6 +17,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    send_from_directory,
     url_for,
 )
 from flask_login import (
@@ -399,6 +398,47 @@ def google_verification():
         os.path.dirname(os.path.abspath(__file__)),
         "google7fadb0b039b40264.html"
     )
+    
+
+# --------------------------------------------------
+# XML SITEMAP FOR GOOGLE SEARCH CONSOLE
+# --------------------------------------------------
+
+@app.route("/sitemap.xml", methods=["GET"])
+def sitemap():
+    """Generate an XML sitemap containing public website pages."""
+
+    public_urls = [
+        "https://the-khidki-man.in/",
+        "https://the-khidki-man.in/services",
+        "https://the-khidki-man.in/projects",
+        "https://the-khidki-man.in/about",
+        "https://the-khidki-man.in/contact",
+        "https://the-khidki-man.in/reviews",
+        "https://the-khidki-man.in/enquiry",
+    ]
+
+    xml_urls = []
+
+    for page_url in public_urls:
+        xml_urls.append(
+            f"""
+    <url>
+        <loc>{escape(page_url)}</loc>
+    </url>"""
+        )
+
+    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{''.join(xml_urls)}
+</urlset>
+"""
+
+    return Response(
+        xml_content,
+        mimetype="application/xml"
+    )
+
 
 @app.route("/services")
 def services_page():
