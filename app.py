@@ -6,6 +6,9 @@ import uuid
 from datetime import date, datetime, time, timedelta, timezone
 from functools import wraps
 
+from flask import send_from_directory
+import os
+
 import click
 from dotenv import load_dotenv
 from flask import (
@@ -390,6 +393,12 @@ def index():
         reviews=reviews,
     )
 
+@app.route("/google7fadb0b039b40264.html")
+def google_verification():
+    return send_from_directory(
+        os.path.dirname(os.path.abspath(__file__)),
+        "google7fadb0b039b40264.html"
+    )
 
 @app.route("/services")
 def services_page():
